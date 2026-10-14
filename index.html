@@ -1,14 +1,116 @@
 <!doctype html>
 <html lang="fr">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="theme-color" content="#080b1d">
-  <meta name="description" content="Francia Politique — plateau de résultats électoraux en direct.">
-  <title>Francia Politique — Direct</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#10131c">
+  <title>Francia Politique — Soirée électorale</title>
+  <link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <div id="app"><div class="loading">FRANCIA POLITIQUE <span>Chargement du plateau…</span></div></div>
-  <script type="module" src="/src/main.js"></script>
+  <header class="topbar">
+    <a class="brand" href="#" aria-label="Francia Politique accueil">
+      <span class="brand-mark">FP</span>
+      <span>FRANCIA <b>POLITIQUE</b><small>LA SOIRÉE ÉLECTORALE</small></span>
+    </a>
+    <div class="live"><span class="pulse"></span> SIMULATION EN DIRECT</div>
+    <button class="btn btn-outline" id="openAdmin">⚙ Régie</button>
+  </header>
+
+  <main class="page">
+    <section class="hero">
+      <div class="eyebrow">ÉLECTION PRÉSIDENTIELLE · PREMIER TOUR</div>
+      <h1>Les résultats <span>en direct.</span></h1>
+      <p class="subtitle">Suivez l’évolution des résultats de la simulation électorale.</p>
+      <div class="status-line"><span class="status-dot"></span><span id="statusText">Résultats de la simulation</span><span class="divider-dot">•</span><span id="lastUpdate">En attente de mise à jour</span></div>
+    </section>
+
+    <section class="content-grid">
+      <div class="main-column">
+        <section class="panel results-panel">
+          <div class="panel-heading">
+            <div><div class="section-kicker">TENDANCES NATIONALES</div><h2>Les candidats</h2></div>
+            <span class="tag">1er TOUR</span>
+          </div>
+          <div id="candidateList" class="candidate-list"></div>
+          <div class="results-foot"><span><i class="legend-dot"></i> Pourcentage des suffrages exprimés</span><span id="totalPercent">Total : 100 %</span></div>
+        </section>
+
+        <section class="panel chart-panel">
+          <div class="panel-heading">
+            <div><div class="section-kicker">RÉPARTITION DES VOIX</div><h2>Le rapport de force</h2></div>
+          </div>
+          <div class="chart-layout">
+            <div class="donut-wrap"><div id="donut" class="donut"><div class="donut-center"><strong id="chartCount">—</strong><span>candidats</span></div></div></div>
+            <div id="chartLegend" class="chart-legend"></div>
+          </div>
+          <p class="note">Résultats fictifs de démonstration — cette page ne présente pas de résultats officiels.</p>
+        </section>
+      </div>
+
+      <aside class="side-column">
+        <section class="panel announcement-panel">
+          <div class="section-kicker">À L’ANTENNE</div>
+          <h2>Le direct</h2>
+          <div class="on-air"><span class="pulse"></span> EN DIRECT</div>
+          <div id="announcementText" class="announcement-text">Bienvenue sur Francia Politique. La soirée électorale va bientôt commencer.</div>
+          <div class="announcement-meta"><span class="mini-avatar">FP</span><span><b>La rédaction</b><small>Dernière annonce</small></span></div>
+        </section>
+
+        <section class="panel winner-panel">
+          <div class="section-kicker">TÊTE DU SCRUTIN</div>
+          <div class="winner-label">En tête actuellement</div>
+          <div id="leaderName" class="leader-name">—</div>
+          <div id="leaderScore" class="leader-score">—</div>
+          <div class="leader-track"><span id="leaderTrack"></span></div>
+          <p class="note">Classement calculé à partir des valeurs saisies dans la régie.</p>
+        </section>
+
+        <section class="panel info-panel">
+          <div class="section-kicker">INFORMATIONS</div>
+          <div class="info-row"><span>Type de scrutin</span><b>Présidentielle</b></div>
+          <div class="info-row"><span>Tour</span><b>Premier tour</b></div>
+          <div class="info-row"><span>Mode</span><b>Simulation</b></div>
+        </section>
+      </aside>
+    </section>
+    <footer><span>FRANCIA POLITIQUE</span><span>Plateau de simulation électorale</span></footer>
+  </main>
+
+  <div id="adminOverlay" class="overlay" aria-hidden="true">
+    <section class="admin-modal" role="dialog" aria-modal="true" aria-labelledby="adminTitle">
+      <div class="admin-header">
+        <div><div class="section-kicker">ESPACE DE CONTRÔLE</div><h2 id="adminTitle">Régie administrateur</h2></div>
+        <button class="icon-btn" id="closeAdmin" aria-label="Fermer">✕</button>
+      </div>
+      <div class="admin-notice">Les changements sont enregistrés dans ce navigateur. Pour les partager entre plusieurs appareils, il faudra un serveur ou un service temps réel.</div>
+      <form id="settingsForm">
+        <label class="field-label" for="showName">Nom de l’émission</label>
+        <input id="showName" maxlength="60" value="Francia Politique">
+        <label class="field-label" for="statusInput">Statut affiché</label>
+        <input id="statusInput" maxlength="100" value="Résultats de la simulation">
+        <label class="field-label" for="announcementInput">Annonce à l’antenne</label>
+        <textarea id="announcementInput" rows="3" maxlength="500">Bienvenue sur Francia Politique. La soirée électorale va bientôt commencer.</textarea>
+        <div class="admin-subheading"><h3>Candidats et résultats</h3><span class="muted">Jusqu’à 8 candidats</span></div>
+        <div id="candidateEditor" class="candidate-editor"></div>
+        <div class="admin-actions">
+          <button type="button" class="btn btn-outline" id="addCandidate">＋ Ajouter un candidat</button>
+          <button type="button" class="btn btn-outline" id="announceLeader">Annoncer la tête du scrutin</button>
+        </div>
+        <div class="admin-actions bottom-actions">
+          <button type="button" class="btn btn-outline" id="resetData">Réinitialiser</button>
+          <button type="submit" class="btn btn-primary">Enregistrer les modifications</button>
+        </div>
+      </form>
+      <div class="mic-box">
+        <div><b>Microphone local</b><p>Teste le micro sur cet appareil uniquement. Il ne diffuse pas la voix aux visiteurs.</p></div>
+        <button id="micButton" class="btn btn-outline">🎙 Activer le micro</button>
+        <audio id="micAudio" autoplay muted></audio>
+        <span id="micStatus" class="muted">Micro désactivé</span>
+      </div>
+    </section>
+  </div>
+
+  <script src="script.js"></script>
 </body>
 </html>
