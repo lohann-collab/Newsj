@@ -1,0 +1,13 @@
+{
+  "version": 2,
+  "functions": {
+    "state.js": { "runtime": "nodejs20.x" },
+    "login.js": { "runtime": "nodejs20.x" },
+    "reset.js": { "runtime": "nodejs20.x" }
+  },
+  "rewrites": [
+    { "source": "/api/state", "destination": "/state.js" },
+    { "source": "/api/login", "destination": "/login.js" },
+    { "source": "/api/reset", "destination": "/reset.js" }
+  ]
+}

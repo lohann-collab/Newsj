@@ -1,22 +1,30 @@
-# Francia Politique — Soirée électorale
+# Francia Politique — backend Vercel, fichiers à plat
+
+Tous les fichiers sont directement dans ce dossier. Il n’y a aucun sous-dossier.
 
 ## Fichiers
-Tous les fichiers sont directement dans ce dossier :
-- `index.html` : page principale
-- `style.css` : apparence du site
-- `script.js` : résultats, régie et interactions
-- `README.md` : ces instructions
+- `index.html`, `style.css`, `script.js` : site public et régie
+- `state.js`, `login.js`, `reset.js` : fonctions backend Vercel
+- `store.js` : accès au stockage Redis
+- `package.json`, `vercel.json` : configuration Vercel
+- `.env.example` : noms des variables à configurer
+- `.gitignore` : fichiers à ne pas publier
 
-## Utilisation
-1. Ouvrez `index.html` dans un navigateur pour tester le site.
-2. Cliquez sur **Régie** pour modifier le nom de l’émission, l’annonce, les candidats, leurs couleurs et leurs pourcentages.
-3. Cliquez sur **Enregistrer les modifications**. Les données sont sauvegardées dans le stockage local du navigateur.
+## Déploiement
+1. Envoyez tous les fichiers à la racine de votre dépôt GitHub.
+2. Importez le dépôt dans Vercel.
+3. Créez une base Redis REST sur Upstash et récupérez son URL REST et son token.
+4. Dans Vercel → Settings → Environment Variables, ajoutez :
+   - `ADMIN_PASSWORD` : mot de passe administrateur unique, 12 caractères minimum.
+   - `ADMIN_TOKEN_SECRET` : secret aléatoire d'au moins 32 caractères.
+   - `UPSTASH_REDIS_REST_URL` : URL fournie par Upstash.
+   - `UPSTASH_REDIS_REST_TOKEN` : token fourni par Upstash.
+5. Redéployez le projet.
+6. Ouvrez le site, cliquez sur Régie et connectez-vous avec `ADMIN_PASSWORD`.
 
-## Hébergement
-Vous pouvez envoyer ces quatre fichiers à la racine d’un dépôt GitHub, puis activer GitHub Pages dans les paramètres du dépôt.
+Vous pouvez générer un secret avec `openssl rand -hex 32`. Ne mettez jamais les vraies valeurs dans GitHub.
 
-## Limites de cette version sans backend
-- Les changements sont enregistrés dans le navigateur utilisé ; ils ne se synchronisent pas automatiquement avec les appareils des visiteurs.
-- Le microphone demande une autorisation du navigateur et reste local à cet appareil. Il ne diffuse pas le son aux spectateurs.
-- Pour synchroniser les résultats ou diffuser le son réellement en direct, il faudra ajouter un backend ou un service temps réel.
-- Les candidats et chiffres de départ sont fictifs. Affichez clairement qu’il s’agit d’une simulation, et non de résultats officiels.
+## Fonctionnement
+Les résultats et annonces textuelles sont stockés côté serveur et rafraîchis chez les visiteurs environ toutes les 4 secondes. Le microphone n'est pas diffusé aux spectateurs dans cette version : une solution audio temps réel séparée serait nécessaire.
+
+Les chiffres initiaux sont fictifs et doivent rester identifiés comme une simulation.
